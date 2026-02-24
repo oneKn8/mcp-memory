@@ -1,3 +1,7 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project]
 name = "mcp-memory"
 version = "0.1.0"
@@ -5,18 +9,24 @@ description = "MCP server for persistent agent memory with semantic search"
 requires-python = ">= 3.11"
 license = "MIT"
 dependencies = [
-    "click>=8.0",
+    "fastmcp>=2.0.0",
+    "chromadb>=1.0.0",
 ]
 
 [project.scripts]
-mcp-memory = "mcp_memory.main:cli"
+mcp-memory = "mcp_memory.server:main"
 
 [project.optional-dependencies]
 dev = [
     "pytest",
+    "pytest-asyncio",
     "ruff",
     "mypy",
 ]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
 
 [tool.ruff]
 line-length = 88
@@ -27,7 +37,3 @@ select = ["E", "F", "I"]
 [tool.mypy]
 strict = true
 python_version = "3.11"
-
-[build-system]
-requires = ["setuptools>=68.0", "wheel"]
-build-backend = "setuptools.backends._legacy:_Backend"
