@@ -3,6 +3,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 import chromadb
 
@@ -16,14 +17,14 @@ def _collection_name(project: str) -> str:
     return f"memories_{safe}"
 
 
-def _tags_to_metadata(tags: list[str]) -> dict[str, object]:
-    meta: dict[str, object] = {"tags": ",".join(sorted(tags))}
+def _tags_to_metadata(tags: list[str]) -> dict[str, Any]:
+    meta: dict[str, Any] = {"tags": ",".join(sorted(tags))}
     for tag in tags:
         meta[f"{TAG_PREFIX}{tag}"] = True
     return meta
 
 
-def _metadata_to_tags(metadata: dict[str, object]) -> list[str]:
+def _metadata_to_tags(metadata: dict[str, Any]) -> list[str]:
     tags_str = str(metadata.get("tags", ""))
     if not tags_str:
         return []
@@ -33,7 +34,7 @@ def _metadata_to_tags(metadata: dict[str, object]) -> list[str]:
 def _memory_from_chroma(
     id: str,
     document: str,
-    metadata: dict[str, object],
+    metadata: dict[str, Any],
 ) -> Memory:
     return Memory(
         id=id,
@@ -73,7 +74,7 @@ class MemoryStore:
         timestamp = datetime.now(timezone.utc).isoformat()
         tags = tags or []
 
-        metadata: dict[str, object] = {
+        metadata: dict[str, Any] = {
             "project": project,
             "source": source,
             "importance": importance,
@@ -142,7 +143,7 @@ class MemoryStore:
                 if min_relevance is not None and relevance < min_relevance:
                     continue
 
-                memory = _memory_from_chroma(mid, documents[i], metadatas[i])
+                memory = _memory_from_chroma(mid, documents[i], dict(metadatas[i]))
                 all_results.append(
                     RecallResult(
                         memory=memory,
@@ -229,7 +230,7 @@ class MemoryStore:
             project_stats[proj] = len(ids)
 
             for i, mid in enumerate(ids):
-                memory = _memory_from_chroma(mid, documents[i], metadatas[i])
+                memory = _memory_from_chroma(mid, documents[i], dict(metadatas[i]))
                 all_memories.append(memory)
 
         # Sort by timestamp descending (newest first)
@@ -245,7 +246,7 @@ class MemoryStore:
     @staticmethod
     def _build_tag_filter(
         tags: list[str] | None,
-    ) -> dict[str, object] | None:
+    ) -> dict[str, Any] | None:
         if not tags:
             return None
         if len(tags) == 1:
