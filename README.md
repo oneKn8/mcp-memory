@@ -1,15 +1,24 @@
 # mcp-memory
 
-MCP server for persistent agent memory with semantic search. Store decisions, context, and knowledge across sessions. Recall them with natural language queries.
+**Your AI agent forgets everything between sessions. This fixes that.**
+
+An MCP server that gives any AI agent persistent memory with semantic search. Store decisions, context, and knowledge once -- recall them with natural language queries across any future session.
+
+Built on ChromaDB embeddings, scoped per project, runs entirely locally.
+
+## Why
+
+Every MCP-based agent (Claude Desktop, Claude Code, Cursor) starts each session with amnesia. Decisions made yesterday are gone. Context from last week is gone. You re-explain the same things every time.
+
+mcp-memory adds four tools -- `remember`, `recall`, `forget`, `list_memories` -- that persist knowledge across sessions with vector similarity search. Your agent remembers what matters and finds it when relevant.
 
 ## Features
 
-- Semantic search via vector embeddings (ChromaDB + all-MiniLM-L6-v2)
-- Per-project memory scoping
-- Tag-based filtering
-- Importance scoring (1-5)
-- Pagination for browsing large memory stores
-- Zero cloud dependencies -- runs entirely locally
+- **Semantic recall** -- vector embeddings (all-MiniLM-L6-v2) find related memories, not just keyword matches
+- **Per-project scoping** -- memories don't leak between projects
+- **Importance scoring** -- prioritize critical decisions (1-5 scale)
+- **Tag-based filtering** -- organize memories by category
+- **Fully local** -- ChromaDB on disk, no cloud, no API keys, no telemetry
 
 ## Installation
 
