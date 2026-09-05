@@ -36,4 +36,9 @@ select = ["E", "F", "I"]
 
 [tool.mypy]
 strict = true
-python_version = "3.11"
+# Analysis target matches the interpreter CI installs (3.12), not the lowest
+# supported runtime. mypy parses third-party stubs with the grammar of this
+# version, and numpy >= 2.5 (Python 3.12+ only) writes numpy/__init__.pyi with
+# PEP 695 `type` aliases, which are a syntax error under "3.11". The package
+# itself still installs and runs on 3.11 -- see requires-python.
+python_version = "3.12"
