@@ -36,4 +36,13 @@ select = ["E", "F", "I"]
 
 [tool.mypy]
 strict = true
-python_version = "3.11"
+# No python_version pin: mypy follows the interpreter it runs under.
+#
+# Pinning it to our floor (3.11) also applies 3.11 syntax rules when parsing
+# third-party stubs, and those stubs belong to whichever interpreter is in
+# use. numpy 2.5 raised its own floor to 3.12 and rewrote numpy/__init__.pyi
+# with PEP 695 `type` aliases, so on a 3.12+ environment the resolver installs
+# numpy 2.5 and mypy rejects its stubs as "only supported in Python 3.12 and
+# greater" before checking any of our code. A 3.11 environment still resolves
+# numpy 2.4.x and still type checks clean, so 3.11 support is verified by
+# running mypy on 3.11 rather than by this pin.
